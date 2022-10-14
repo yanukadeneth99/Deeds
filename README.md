@@ -23,6 +23,7 @@ This is handled in the blockchain itself (no need for another middle man) and si
 ### 👀 Perks
 
 - Cannot access House Information like Images, Count of Beedrooms when the house is not for sale.
+- Basic Checks before listing and unlisting data.
 
 ## 👨‍🔧 Project Plan
 

@@ -10,6 +10,7 @@
 (define-constant err-deed-does-not-exist (err u102)) ;; Deed does not exist
 (define-constant err-deed-exists (err u103)) ;; Deed already exists
 (define-constant err-invalid-variable (err u104)) ;; Invalid Value Passed
+(define-constant err-not-deed-owner (err u105)) ;; Not the Deed Owner
 
 
 ;; --- Constants ---
@@ -21,8 +22,8 @@
 (define-data-var last-deed-id uint u0)
 
 ;; --- Data Maps ---
-;; Deed ID => HouseInformation(owner, first name, image url, metadata(bedrooms, bathrooms, size X, size Y), price of the house, whether it's listed for sale)
-(define-map deeds uint { owner: principal, name: (string-ascii 15), images: (string-ascii 128), metadata: (list 4 uint), price: uint, listed: bool })
+;; Deed ID => HouseInformation(owner, first name, image url, bedrooms, bathrooms, Land Width, Land Length, price of the house, whether it's listed for sale)
+(define-map deeds uint { owner: principal, name: (string-ascii 15), images: (string-ascii 128), bedroom: uint, bathroom: uint, sizeX: uint, sizeY: uint, price: uint, listed: bool })
 
 ;; --- Private Functions ---
 ;;
@@ -41,18 +42,28 @@
   (let
     (
       (next-deed-id (+ (var-get last-deed-id) u1))
-      (metadata (list bedroom bathroom sizeX sizeY))
     )
-    (asserts! (is-eq (> bedroom u0)) err-invalid-variable)
-    (asserts! (is-eq (> bathroom u0)) err-invalid-variable)
-    (asserts! (is-eq (> sizeX u0)) err-invalid-variable)
-    (asserts! (is-eq (> sizeY u0)) err-invalid-variable)
-    (map-set deeds next-deed-id {owner: tx-sender, name: name, images: images, metadata: metadata, price: u0, listed: false })
+    (asserts! (> bedroom u0) err-invalid-variable)
+    (asserts! (> bathroom u0) err-invalid-variable)
+    (asserts! (> sizeX u0) err-invalid-variable)
+    (asserts! (> sizeY u0) err-invalid-variable)
+    (map-set deeds next-deed-id {owner: tx-sender, name: name, images: images, bedroom: bedroom, bathroom: bathroom, sizeX: sizeX, sizeY: sizeY, price: u0, listed: false })
     (ok true)
   )
 )
 
-;; Update Deed
+;; Transfers an existing owned Deed
+;; @param recipient Transfer person ID
+;; @param deed-id The Deed ID
+;; @returns bool True if all is good
+(define-public (transfer-deed (recipient principal) (deed-id uint))
+  (begin
+    (asserts! (<= deed-id (var-get last-deed-id)) err-invalid-variable)
+    (asserts! (is-eq (unwrap-panic (get owner (map-get? deeds deed-id))) tx-sender) err-not-deed-owner)
+    (merge (unwrap-panic (map-get? deeds deed-id)) {owner: recipient})
+    (ok true)
+  )
+)
 
 ;; List for Sale
 
