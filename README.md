@@ -1,18 +1,14 @@
 # 👋 Introduction
 
-A contract that users can use to list their houses for sale allowing potential
-buyers to pay using STX to change the ownership of the house to their name.
+A contract that users can use to list their houses for sale allowing potential buyers to pay using STX to change the ownership of the house to their name.
 
-The Deeds contains information regarding the House that anyone can view to
-get information on who owns a certain listed property.
+The Deeds contains information regarding the House that anyone can view to get information on who owns a certain listed property.
 
 ## ✍️ Project Description
 
 ### 🤔 Why Blockchain
 
-This is handled in the blockchain itself (no need for another middle man)
-and since the code is what governs the interaction between the user and the
-buyer, there is no space to cheat.
+This is handled in the blockchain itself (no need for another middle man) and since the code is what governs the interaction between the user and the buyer, there is no space to cheat.
 
 ### 🤩 Features
 
@@ -23,6 +19,10 @@ buyer, there is no space to cheat.
 - View who owns a created deed.
 
 ## 🤖 Code
+
+### 👀 Perks
+
+- Cannot access House Information like Images, Count of Beedrooms when the house is not for sale.
 
 ## 👨‍🔧 Project Plan
 
