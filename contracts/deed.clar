@@ -2,7 +2,7 @@
 ;; This contract contains information on house deeds which can be created and listed
 ;; by anyone. The listed deeds can be bought and sold by other parties. Every
 ;; interaction is handled from this contract itself and cannot involve another
-;; party.
+;; party (human).
 
 ;; --- Errors ---
 (define-constant err-deed-not-listed (err u100)) ;; Deed is not listed for sale
@@ -65,7 +65,25 @@
   )
 )
 
-;; List for Sale
+;; Listing owned Deed for sale
+;; @param deed-id The ID of the Deed
+;; @param price The price you want to sell the house for
+;; @returns bool True if all is good
+(define-public (list-for-sale (deed-id uint) (price uint))
+  (let
+    (
+      (owner (unwrap-panic (get owner (map-get? deeds deed-id))))
+      (images (unwrap-panic (get images (map-get? deeds deed-id))))
+      (bedroom (unwrap-panic (get bedroom (map-get? deeds deed-id))))
+      (bathroom (unwrap-panic (get bathroom (map-get? deeds deed-id))))
+      (sizeX (unwrap-panic (get sizeX (map-get? deeds deed-id))))
+      (sizeY (unwrap-panic (get sizeY (map-get? deeds deed-id))))
+    )
+    (asserts! (is-eq owner tx-sender) err-not-deed-owner)
+    (merge (unwrap-panic (map-get? deeds deed-id)) {listing: true, price: price})
+    (ok true)
+  )
+)
 
 ;; Unlist for Sale
 
