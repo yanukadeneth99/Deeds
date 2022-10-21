@@ -78,14 +78,25 @@
       (bathroom (unwrap-panic (get bathroom (map-get? deeds deed-id))))
       (sizeX (unwrap-panic (get sizeX (map-get? deeds deed-id))))
       (sizeY (unwrap-panic (get sizeY (map-get? deeds deed-id))))
+      (list (unwrap-panic (get listed (map-get? deeds deed-id))))
     )
     (asserts! (is-eq owner tx-sender) err-not-deed-owner)
-    (merge (unwrap-panic (map-get? deeds deed-id)) {listing: true, price: price})
+    (asserts! (not list) err-deed-listed)
+    (merge (unwrap-panic (map-get? deeds deed-id)) {listed: true, price: price})
     (ok true)
   )
 )
 
-;; Unlist for Sale
+;; Unlist an already listed sale
+;; @param deed-id The Deed ID
+;; @returns bool True if all is good
+(define-public (unlist-for-sale (deed-id uint))
+  (begin
+    (asserts! (is-eq (unwrap-panic (get owner (map-get? deeds deed-id))) tx-sender) err-not-deed-owner)
+    (merge (unwrap-panic (map-get? deeds deed-id)) {listed: false})
+    (ok true)
+  )
+)
 
 ;; Buy House
 
