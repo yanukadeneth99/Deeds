@@ -110,12 +110,13 @@
 (define-public (buy-deed (deed-id uint))
   (let
     (
-      (listed (unwrap! (get listed (map-get? deeds deed-id)) err-deed-does-not-exist))
+      (owner (unwrap! (get owner (map-get? deeds deed-id)) err-deed-does-not-exist))
+      (listed (unwrap-panic (get listed (map-get? deeds deed-id))))
       (price (unwrap-panic (get price (map-get? deeds deed-id))))
     )
     (asserts! listed err-deed-not-listed)
     (asserts! (is-eq (> price u0)) err-price-expected-more)
-    (try! (stx-transfer? price tx-sender (as-contract tx-sender))) ;; Do the transaction
+    (try! (stx-transfer? price tx-sender owner)) ;; Transaction from the buyer to the owner
     (map-set deeds deed-id (merge (unwrap-panic (map-get? deeds deed-id)) {owner: tx-sender, listed: false}))
     (ok true)
   )
@@ -227,4 +228,11 @@
       (ok {owner: owner, name: name, bedroom: bedroom, bathroom: bathroom, sizeX: sizeX, sizeY: sizeY, images: images, price: price})
     )
   )
+)
+
+;;* Gets the owner of a deed
+;; @param deed-id The Deed ID
+;; @returns principal The Owner address of the Deed
+(define-read-only (get-owner (deed-id uint))
+  (ok (unwrap! (get owner (map-get? deeds deed-id)) err-deed-does-not-exist))
 )
