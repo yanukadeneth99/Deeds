@@ -38,7 +38,7 @@
   )
 )
 
-;; --- Public Functions ---
+;;? --- Public Functions ---
 
 ;;* Creates a Deed
 ;; @param name Your name
@@ -70,9 +70,8 @@
 ;; @returns bool True if all is good
 (define-public (transfer-deed (recipient principal) (deed-id uint))
   (begin
-    (asserts! (<= deed-id (var-get last-deed-id)) err-invalid-variable)
     (asserts! (try! (is-valid-owner deed-id)) err-not-deed-owner)
-    (merge (unwrap-panic (map-get? deeds deed-id)) {owner: recipient})
+    (map-set deeds deed-id (merge (unwrap-panic (map-get? deeds deed-id)) {owner: recipient}))
     (ok true)
   )
 )
@@ -85,6 +84,7 @@
 (define-public (list-for-sale (deed-id uint) (price uint))
   (begin
     (asserts! (try! (is-valid-owner deed-id)) err-not-deed-owner)
+    (asserts! (not (unwrap-panic (get listed (map-get? deeds deed-id)))) err-deed-listed)
     (asserts! (> price u0) err-price-expected-more)
     (map-set deeds deed-id (merge (unwrap-panic (map-get? deeds deed-id)) {listed: true, price: price}))
     (ok true)
@@ -97,6 +97,7 @@
 (define-public (unlist-for-sale (deed-id uint))
   (begin
     (asserts! (try! (is-valid-owner deed-id)) err-not-deed-owner)
+    (asserts! (unwrap-panic (get listed (map-get? deeds deed-id))) err-deed-listed)
     (map-set deeds deed-id (merge (unwrap-panic (map-get? deeds deed-id)) {listed: false}))
     (ok true)
   )
@@ -112,7 +113,7 @@
       (listed (unwrap! (get listed (map-get? deeds deed-id)) err-deed-does-not-exist))
       (price (unwrap-panic (get price (map-get? deeds deed-id))))
     )
-    (asserts! (is-eq listed) err-deed-not-listed)
+    (asserts! listed err-deed-not-listed)
     (asserts! (is-eq (> price u0)) err-price-expected-more)
     (try! (stx-transfer? price tx-sender (as-contract tx-sender))) ;; Do the transaction
     (map-set deeds deed-id (merge (unwrap-panic (map-get? deeds deed-id)) {owner: tx-sender, listed: false}))
