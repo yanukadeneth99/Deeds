@@ -60,6 +60,7 @@
     (asserts! (not (is-eq images "")) err-invalid-variable)
     (asserts! (not (is-eq name "")) err-invalid-variable)
     (map-set deeds next-deed-id {owner: tx-sender, name: name, images: images, bedroom: bedroom, bathroom: bathroom, sizeX: sizeX, sizeY: sizeY, price: u0, listed: false })
+    (var-set last-deed-id next-deed-id)
     (ok true)
   )
 )
@@ -235,4 +236,10 @@
 ;; @returns principal The Owner address of the Deed
 (define-read-only (get-owner (deed-id uint))
   (ok (unwrap! (get owner (map-get? deeds deed-id)) err-deed-does-not-exist))
+)
+
+;;* Gets the last Deed ID created
+;; @returns uint The Last DEED ID
+(define-read-only (get-last-deed-id)
+  (ok (var-get last-deed-id))
 )

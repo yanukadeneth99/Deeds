@@ -26,18 +26,31 @@ By default, this makes the blockchain the best place to keep deeds.
 
 ## 🤖 Code
 
+When the house is not listed for sale :
+
+![Code_Screenshot](https://i.imgur.com/gZZ1ASv.png)
+
+When the house is listed for sale :
+
+![Code_Screenshot](https://i.imgur.com/ULqAr9x.png)
+
 ### 👀 Perks
 
 - Cannot access House Information like Images, Count of Bedrooms when the house is not for sale.
 - Basic Checks before listing and unlisting data.
 - Error Handling and checking to make sure information is posted and rooms cannot be zero
 
-![Code_Screenshot](https://i.imgur.com/xcWAHWr.png)
+![Code_Screenshot](https://i.imgur.com/qorZdlx.png)
+
+### Test Status
+
+![Result_Screenshot](https://i.imgur.com/glsxteZ.png)
 
 ## 👨‍🔧 Project Plan
 
 - [x] Finalize the Idea
-- [x] Build the Contract(s)
+- [x] Build the Contract
+- [x] Build Test Cases
 - [ ] Build a Frontend Application
 
 ## 🤝 License
